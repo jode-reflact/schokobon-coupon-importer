@@ -9,20 +9,16 @@ from selenium.webdriver.support.expected_conditions import \
 
 
 class CollectCoupons:
-    def __init__(self) -> None:
-        codes = [
-            "7XZPWFJRT2",
-            "7XCE9YX247",
-            "7X3RANWKZJ",
-            "7XJX26LTM4",
-            "7XTKWX4M6A"
-        ]
+    def __init__(self, code_file_path, email) -> None:
+        with open(code_file_path, 'r') as file:
+            codes = file.readlines()
 
         opts = Options()
         #opts.add_argument("--headless")
         browser = Firefox(options=opts)
-        browser.implicitly_wait(10)
-        for code in [codes[4]]: #codes:
+        browser.implicitly_wait(2)
+        for code in [codes[12]]: #codes:
+            code = code.strip()
             browser.get('https://www.kinder.com/de/de/xp/suchspass/#teilnehmen')
 
             cookies = browser.find_element(By.CSS_SELECTOR, '.ot-bnr-save-handler')
@@ -36,14 +32,26 @@ class CollectCoupons:
             code_input.send_keys(code)
 
             email_input = browser.find_element(By.ID, 'email')
-            email_input.send_keys('sjonbon@jdeterding.de')
+            email_input.send_keys(email)
 
             email_input.submit()
 
+            time.sleep(2)
+
+            try:
+                code_already_used = browser.find_element(By.CSS_SELECTOR, '[x-show="usedCode"]')
+                if code_already_used.is_displayed():
+                    print("code already used")
+                    continue
+            except:
+                print("code not used")
+
             switch = browser.find_element(By.ID, 'switch-2')
-            ActionChains(browser).scroll_to_element(switch).click(switch).perform() #fix this
+            #ActionChains(browser).scroll_to_element(switch).click(switch).perform() #fix this
+            browser.execute_script('arguments[0].scrollIntoView({ block: "center", inline: "center" });', switch)
             #element_to_be_clickable(switch)
-            #switch.click()
+            time.sleep(2)
+            switch.click()
             switch.submit()
             time.sleep(10)
             #id switch-2
@@ -55,5 +63,5 @@ class SaveCouponPdfs():
         pass
 
 if __name__ == '__main__':
-    CollectCoupons()
+    CollectCoupons(code_file_path='codes.txt', email='sjonbon@jdeterding.de')
     SaveCouponPdfs()
