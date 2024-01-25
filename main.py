@@ -9,7 +9,7 @@ from selenium.webdriver.firefox.options import Options
 
 
 class CollectCoupons:
-    def __init__(self, code_file_path, email) -> None:
+    def __init__(self, code_file_path: str, email: str, headless: bool) -> None:
         df_path = 'code_status.xlsx'
         
         if os.path.exists(df_path):
@@ -21,7 +21,9 @@ class CollectCoupons:
             codes = file.readlines()
 
         opts = Options()
-        #opts.add_argument("--headless")
+
+        if headless:
+            opts.add_argument("--headless")
         browser = Firefox(options=opts)
         browser.implicitly_wait(2)
         for code in codes:
@@ -96,8 +98,9 @@ if __name__ == '__main__':
                     prog='Schokobon-Coupon-Collector')
     parser.add_argument('-f', '--file_path', type=str, required=True)
     parser.add_argument('-e', '--email', type=str, required=True)
+    parser.add_argument('--headless', action='store_true') #Not tested yet
 
     args = parser.parse_args()
 
-    CollectCoupons(code_file_path=args.file_path, email=args.email)
+    CollectCoupons(code_file_path=args.file_path, email=args.email, headless=args.headless)
     SaveCouponPdfs()
