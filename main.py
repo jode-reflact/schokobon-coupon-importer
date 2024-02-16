@@ -61,7 +61,7 @@ class CollectCoupons:
                 code_already_used = browser.find_element(By.CSS_SELECTOR, '[x-show="usedCode"]')
                 if code_already_used.is_displayed():
                     print(f"Code {code} already used")
-                    df.loc[len(df)] = [code, True, False] # Code, Used, Downloaded
+                    df.loc[len(df)] = [code, False, False] # Code, Used, Downloaded
                     df.to_excel(df_path, index=False)
                     continue
             except Exception as e:
@@ -88,11 +88,6 @@ class CollectCoupons:
 
         browser.quit()
 
-class SaveCouponPdfs():
-    def __init__(self) -> None:
-        #future work
-        pass
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
                     prog='Schokobon-Coupon-Collector')
@@ -103,4 +98,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     CollectCoupons(code_file_path=args.file_path, email=args.email, headless=args.headless)
-    SaveCouponPdfs()

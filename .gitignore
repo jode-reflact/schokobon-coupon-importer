@@ -1,4 +1,10 @@
 code_status.xlsx
+coupon_status.xlsx
+codes_*.txt
+mail_input/
+coupon_output/
+test.ipynb
+.DS_STORE
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
